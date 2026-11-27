@@ -146,12 +146,26 @@ footer {
   </div>
 </div>
 
+
 <div class="card">
   <h2>🐠 Fish Health Guidance</h2>
-  <p>Get basic guidance about fish health.</p>
-  <button onclick="showInfo('health')">View Fish Health Tips</button>
-  <div class="result" id="healthInfo">Fish health guidance will appear here.</div>
+  <p>Select the symptom observed in your fish.</p>
+
+  <select id="fishSymptom">
+    <option value="">Select a symptom</option>
+    <option value="appetite">Fish are not eating</option>
+    <option value="swimming">Slow or unusual swimming</option>
+    <option value="surface">Fish are coming to the surface</option>
+    <option value="spots">Unusual spots on fish</option>
+  </select>
+
+  <button onclick="checkFishHealth()">Get Guidance</button>
+
+  <div class="result" id="fishResult">
+    Fish health guidance will appear here.
+  </div>
 </div>
+
 
 <div class="card">
   <h2>🍽️ Feeding Reminders</h2>
@@ -376,6 +390,26 @@ function checkWater() {
 
   result.innerText = message;
 }
+  
+function checkFishHealth() {
+  const symptom = document.getElementById("fishSymptom").value;
+  const result = document.getElementById("fishResult");
+
+  const guidance = {
+    appetite: "Check water quality and observe feeding conditions. Contact an aquaculture expert if the problem continues.",
+    swimming: "Observe fish behaviour and check water quality. Seek expert guidance if unusual swimming continues.",
+    surface: "Check dissolved oxygen and water quality immediately. Low oxygen may be one possible reason. Seek expert help.",
+    spots: "Observe the affected fish and water conditions. Avoid guessing the disease. Contact an aquaculture expert for diagnosis."
+  };
+
+  if (symptom === "") {
+    result.innerText = "Please select a fish symptom.";
+    return;
+  }
+
+  result.innerText = guidance[symptom];
+}
+
 
 </script>
 
