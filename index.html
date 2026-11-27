@@ -203,14 +203,31 @@ footer {
 </div>
 
 
+
 <div class="card">
-  <h2>💰 Market Price Information</h2>
-  <p>Check local fish market prices before selling.</p>
-  <div class="result">
-    Live market prices are not connected yet.
-    Contact your local fish market for current rates.
+  <h2>💰 Fish Market Price Information</h2>
+  <p>Check sample fish prices by market.</p>
+
+  <select id="market">
+    <option value="">Select Market</option>
+    <option value="vizag">Visakhapatnam</option>
+  </select>
+
+  <button onclick="getFishPrices()">
+    Check Fish Prices
+  </button>
+
+  <div class="result" id="priceResult">
+    Fish market prices will appear here.
   </div>
+
+  <p>
+    <small>
+      Demo prices are illustrative and not live market quotations.
+    </small>
+  </p>
 </div>
+
 
 <div class="card">
   <h2>✨ Our Features</h2>
@@ -497,6 +514,38 @@ async function getWeather() {
       "Unable to get weather information. Please try again later.";
   }
 }
+  
+function getFishPrices() {
+  const market = document.getElementById("market").value;
+  const result = document.getElementById("priceResult");
+
+  if (market === "") {
+    result.innerText = "Please select a fish market.";
+    return;
+  }
+
+  const prices = [
+    { name: "Tuna", min: 120, max: 180 },
+    { name: "Prawns", min: 250, max: 1250 },
+    { name: "Croakers", min: 80, max: 150 },
+    { name: "Scads", min: 70, max: 80 },
+    { name: "Cephalopods", min: 80, max: 150 }
+  ];
+
+  let report = "Visakhapatnam Fish Market\n";
+  report += "Illustrative price ranges (₹/kg)\n\n";
+
+  prices.forEach(function(fish) {
+    report += fish.name + ": ₹" +
+      fish.min + " - ₹" + fish.max + " per kg\n";
+  });
+
+  report += "\nSample demonstration data only.";
+  report += "\nActual prices vary by date, size, quality and market.";
+
+  result.innerText = report;
+}
+
 
 
 
