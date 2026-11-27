@@ -127,6 +127,26 @@ footer {
 </div>
 
 <div class="card">
+  <h2>📊 Pond Water Quality Checker</h2>
+  <p>Enter your pond water readings to get basic guidance.</p>
+
+  <label>pH Level</label>
+  <input type="number" id="ph" placeholder="Example: 7.5" step="0.1">
+
+  <label>Dissolved Oxygen (mg/L)</label>
+  <input type="number" id="oxygen" placeholder="Example: 5">
+
+  <label>Water Temperature (°C)</label>
+  <input type="number" id="temperature" placeholder="Example: 28">
+
+  <button onclick="checkWater()">Check Water Quality</button>
+
+  <div class="result" id="waterResult">
+    Your water quality report will appear here.
+  </div>
+</div>
+
+<div class="card">
   <h2>🐠 Fish Health Guidance</h2>
   <p>Get basic guidance about fish health.</p>
   <button onclick="showInfo('health')">View Fish Health Tips</button>
@@ -300,6 +320,63 @@ function setReminder() {
     });
   }
 }
+  
+function checkWater() {
+  const ph = Number(document.getElementById("ph").value);
+  const oxygen = Number(document.getElementById("oxygen").value);
+  const temp = Number(document.getElementById("temperature").value);
+
+  const result = document.getElementById("waterResult");
+
+  if (
+    document.getElementById("ph").value === "" ||
+    document.getElementById("oxygen").value === "" ||
+    document.getElementById("temperature").value === ""
+  ) {
+    result.innerText = "Please enter all water values.";
+    return;
+  }
+
+  if (
+    !Number.isFinite(ph) ||
+    !Number.isFinite(oxygen) ||
+    !Number.isFinite(temp) ||
+    ph < 0 || ph > 14 ||
+    oxygen < 0 || temp < 0
+  ) {
+    result.innerText = "Please enter valid readings.";
+    return;
+  }
+
+  let message = "Water Quality Report:\n";
+
+  message += "pH: " + ph + "\n";
+  message += "Dissolved Oxygen: " + oxygen + " mg/L\n";
+  message += "Temperature: " + temp + " °C\n\n";
+
+  if (ph < 6.5 || ph > 9) {
+    message += "Check pH. It is outside this demo's reference range.\n";
+  } else {
+    message += "pH is within this demo's reference range.\n";
+  }
+
+  if (oxygen < 4) {
+    message += "Dissolved oxygen is low. Seek expert guidance.\n";
+  } else {
+    message += "Dissolved oxygen is within this demo's reference range.\n";
+  }
+
+  if (temp < 20 || temp > 32) {
+    message += "Check temperature for your fish species.\n";
+  } else {
+    message += "Temperature is within this demo's reference range.\n";
+  }
+
+  message += "\nThese are general demo thresholds, not a diagnosis. Suitable ranges depend on fish species and farming conditions.";
+
+  result.innerText = message;
+}
+
 </script>
 
 </body>
