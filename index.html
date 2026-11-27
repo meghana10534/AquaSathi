@@ -1,0 +1,306 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AquaSathi - Smart Fish Farming</title>
+
+<style>
+* { box-sizing:border-box; }
+body {
+  margin:0;
+  font-family:Arial,sans-serif;
+  background:#eef8f5;
+  color:#173b35;
+}
+header {
+  background:linear-gradient(120deg,#075e54,#13a58a);
+  color:white;
+  padding:25px 18px;
+  border-radius:0 0 25px 25px;
+}
+header h1 { margin:0; font-size:27px; }
+header p { margin-bottom:0; }
+main { max-width:700px; margin:auto; padding:16px; }
+.card {
+  background:white;
+  padding:18px;
+  border-radius:16px;
+  margin:14px 0;
+  box-shadow:0 3px 12px #0000000d;
+}
+h2 { font-size:19px; margin-top:0; }
+select,input,button {
+  width:100%;
+  padding:13px;
+  border-radius:10px;
+  border:1px solid #cbded8;
+  font-size:15px;
+  margin:7px 0;
+}
+button {
+  background:#087d69;
+  color:white;
+  border:none;
+  font-weight:bold;
+  cursor:pointer;
+}
+button:active { opacity:.8; }
+.mic {
+  background:#e3f6ef;
+  color:#087d69;
+  border:3px solid #087d69;
+  border-radius:50%;
+  width:105px;
+  height:105px;
+  font-size:39px;
+  display:block;
+  margin:18px auto;
+}
+.center { text-align:center; }
+.result {
+  background:#edf8f4;
+  padding:14px;
+  border-radius:10px;
+  min-height:55px;
+  line-height:1.6;
+  white-space:pre-wrap;
+}
+.features {
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:12px;
+}
+.feature {
+  background:#e9f7f2;
+  padding:18px 10px;
+  text-align:center;
+  border-radius:12px;
+  font-weight:bold;
+}
+footer {
+  text-align:center;
+  padding:20px;
+  color:#54766d;
+  font-size:13px;
+}
+</style>
+</head>
+
+<body>
+
+<header>
+  <h1>🐟 AquaSathi</h1>
+  <p>Your Smart Voice Assistant for Fish Farmers</p>
+  <p>🌱 Smart Aquaculture | India</p>
+</header>
+
+<main>
+
+<div class="card">
+  <h2>👋 Welcome to AquaSathi!</h2>
+  <p>Ask your fish farming questions in Telugu or English.</p>
+  <label>Select Language</label>
+  <select id="language">
+    <option value="te-IN">తెలుగు (Telugu)</option>
+    <option value="en-IN">English</option>
+  </select>
+</div>
+
+<div class="card center">
+  <h2>🎙️ Voice Assistant</h2>
+  <p>Tap the microphone and speak your question.</p>
+  <button class="mic" onclick="startListening()">🎤</button>
+  <p id="status">Tap to start speaking</p>
+  <h3>Your Question</h3>
+  <div class="result" id="question">Your speech will appear here.</div>
+  <h3>AquaSathi Response</h3>
+  <div class="result" id="answer">Your answer will appear here.</div>
+  <button onclick="speakAnswer()">🔊 Listen Again</button>
+</div>
+
+<div class="card">
+  <h2>🌊 Pond Water Quality</h2>
+  <p>Learn about important pond water parameters.</p>
+  <button onclick="showInfo('water')">View Water Quality Tips</button>
+  <div class="result" id="waterInfo">Water management guidance will appear here.</div>
+</div>
+
+<div class="card">
+  <h2>🐠 Fish Health Guidance</h2>
+  <p>Get basic guidance about fish health.</p>
+  <button onclick="showInfo('health')">View Fish Health Tips</button>
+  <div class="result" id="healthInfo">Fish health guidance will appear here.</div>
+</div>
+
+<div class="card">
+  <h2>🍽️ Feeding Reminders</h2>
+  <label>Set a feeding reminder</label>
+  <input type="time" id="feedTime">
+  <button onclick="setReminder()">Set Reminder</button>
+  <div class="result" id="reminderInfo">No reminder set.</div>
+</div>
+
+<div class="card">
+  <h2>☀️ Weather Information</h2>
+  <p>Weather information is important for pond management.</p>
+  <div class="result">
+    Live weather service is not connected yet.
+    Please check your local weather forecast before making farming decisions.
+  </div>
+</div>
+
+<div class="card">
+  <h2>💰 Market Price Information</h2>
+  <p>Check local fish market prices before selling.</p>
+  <div class="result">
+    Live market prices are not connected yet.
+    Contact your local fish market for current rates.
+  </div>
+</div>
+
+<div class="card">
+  <h2>✨ Our Features</h2>
+  <div class="features">
+    <div class="feature">🎤<br>Voice Assistant</div>
+    <div class="feature">🌊<br>Pond Management</div>
+    <div class="feature">🐟<br>Fish Health</div>
+    <div class="feature">🍽️<br>Feeding Reminders</div>
+    <div class="feature">☀️<br>Weather Updates</div>
+    <div class="feature">💰<br>Market Information</div>
+  </div>
+</div>
+
+</main>
+
+<footer>
+  AquaSathi © 2026 | Empowering Fish Farmers with Voice AI
+</footer>
+
+<script>
+let lastAnswer = "";
+
+const responses = {
+  water: "Check pond water regularly. Monitor dissolved oxygen, pH and temperature using suitable testing equipment. Seek advice from an aquaculture expert if readings are outside recommended ranges.",
+  health: "Observe fish behaviour, appetite and swimming patterns regularly. If fish show unusual behaviour or signs of illness, contact an aquaculture expert for proper diagnosis.",
+  feeding: "Feed fish according to their species, age, biomass and recommended feeding schedule. Avoid overfeeding and remove excess feed where appropriate."
+};
+
+function getAnswer(text) {
+  let q = text.toLowerCase();
+  let lang = document.getElementById("language").value;
+
+  if (q.includes("water") || q.includes("నీరు") || q.includes("నీటి")) {
+    return lang === "te-IN"
+      ? "చెరువు నీటి pH, ఆక్సిజన్ మరియు ఉష్ణోగ్రతను క్రమం తప్పకుండా పరీక్షించండి. సరైన పద్ధతుల కోసం ఆక్వాకల్చర్ నిపుణుడిని సంప్రదించండి."
+      : responses.water;
+  }
+
+  if (q.includes("health") || q.includes("sick") || q.includes("fish") || q.includes("చేప") || q.includes("జబ్బు")) {
+    return lang === "te-IN"
+      ? "చేపల ప్రవర్తన, ఆహారం తీసుకోవడం గమనించండి. అనారోగ్య లక్షణాలు కనిపిస్తే ఆక్వాకల్చర్ నిపుణుడిని సంప్రదించండి."
+      : responses.health;
+  }
+
+  if (q.includes("feed") || q.includes("food") || q.includes("ఆహారం")) {
+    return lang === "te-IN"
+      ? "చేపల వయస్సు, రకం మరియు బరువును బట్టి సరైన ఆహారం ఇవ్వండి. ఎక్కువ ఆహారం వేయకుండా జాగ్రత్త పడండి."
+      : responses.feeding;
+  }
+
+  if (q.includes("weather") || q.includes("వాతావరణం")) {
+    return lang === "te-IN"
+      ? "స్థానిక వాతావరణ సూచనలను పరిశీలించి, వర్షాలు మరియు ఉష్ణోగ్రత మార్పులకు అనుగుణంగా చెరువు నిర్వహణ చేయండి."
+      : "Please check your local weather forecast and prepare your pond management accordingly. Live weather data is not connected yet.";
+  }
+
+  if (lang === "te-IN") {
+    return "క్షమించండి, మీ ప్రశ్న అర్థం కాలేదు. దయచేసి మళ్లీ కొంచెం నెమ్మదిగా అడగండి.";
+  }
+  return "Sorry, I could not understand your question. Please try asking about fish health, pond water or feeding.";
+}
+
+function startListening() {
+  const SpeechRecognition =
+    window.SpeechRecognition || window.webkitSpeechRecognition;
+
+  if (!SpeechRecognition) {
+    document.getElementById("status").innerText =
+      "Speech recognition is not supported. Please try Google Chrome.";
+    return;
+  }
+
+  const recognition = new SpeechRecognition();
+  recognition.lang = document.getElementById("language").value;
+  recognition.interimResults = false;
+  recognition.maxAlternatives = 1;
+
+  document.getElementById("status").innerText = "Listening... Speak now.";
+
+  recognition.onresult = function(event) {
+    const text = event.results[0][0].transcript;
+    document.getElementById("question").innerText = text;
+
+    lastAnswer = getAnswer(text);
+    document.getElementById("answer").innerText = lastAnswer;
+    document.getElementById("status").innerText = "Answer ready!";
+    speakAnswer();
+  };
+
+  recognition.onerror = function(event) {
+    document.getElementById("status").innerText =
+      "Could not recognize speech: " + event.error +
+      ". Please try again in a quieter place.";
+  };
+
+  recognition.onend = function() {
+    if (document.getElementById("status").innerText === "Listening... Speak now.") {
+      document.getElementById("status").innerText = "Listening ended. Tap to try again.";
+    }
+  };
+
+  recognition.start();
+}
+
+function speakAnswer() {
+  if (!lastAnswer) return;
+
+  window.speechSynthesis.cancel();
+
+  const msg = new SpeechSynthesisUtterance(lastAnswer);
+  msg.lang = document.getElementById("language").value;
+  msg.rate = 0.9;
+  window.speechSynthesis.speak(msg);
+}
+
+function showInfo(type) {
+  const target = type === "water" ? "waterInfo" : "healthInfo";
+  document.getElementById(target).innerText = responses[type];
+}
+
+function setReminder() {
+  const time = document.getElementById("feedTime").value;
+
+  if (!time) {
+    alert("Please select a time.");
+    return;
+  }
+
+  document.getElementById("reminderInfo").innerText =
+    "Feeding reminder saved for " + time +
+    ". Keep this page open for the reminder feature to be expanded.";
+
+  if ("Notification" in window && Notification.permission === "default") {
+    Notification.requestPermission();
+  }
+
+  if ("Notification" in window && Notification.permission === "granted") {
+    new Notification("AquaSathi", {
+      body: "Your feeding reminder is set for " + time
+    });
+  }
+}
+</script>
+
+</body>
+</html>
